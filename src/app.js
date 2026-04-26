@@ -12,6 +12,8 @@ const logger = require('./utils/logger');
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 app.use(helmet());
 app.use(compression());
 app.use(mongoSanitize());
@@ -44,6 +46,19 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan('combined', {
   stream: { write: (message) => logger.http(message.trim()) },
 }));
+
+app.post('/api/seed', async (req, res) => {
+  if (req.headers['x-seed-secret'] !== process.env.SEED_SECRET) {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    const seed = require('./utils/seeder');
+    await seed();
+    res.json({ success: true, message: 'Database seeded successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
 
 app.get('/health', (req, res) => {
   res.json({

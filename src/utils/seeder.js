@@ -141,12 +141,13 @@ const seed = async () => {
   logger.info('  Branch Admin: branch@littlemillennium.com / Branch@123');
   logger.info('  Teacher: teacher@littlemillennium.com / Teacher@123');
   logger.info('  Parent: parent@littlemillennium.com / Parent@123');
-
-  await mongoose.connection.close();
-  process.exit(0);
 };
 
-seed().catch(err => {
-  logger.error('Seed failed:', err);
-  process.exit(1);
-});
+module.exports = seed;
+
+if (require.main === module) {
+  seed().then(() => process.exit(0)).catch(err => {
+    logger.error('Seed failed:', err);
+    process.exit(1);
+  });
+}
