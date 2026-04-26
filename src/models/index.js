@@ -1,0 +1,11 @@
+require('./User');
+require('./Branch');
+require('./Child');
+require('./Teacher');
+require('./Parent');
+require('./Class');
+require('./Attendance');
+require('./Activity');
+require('./Fee');
+require('./Report');
+require('./Transport');
